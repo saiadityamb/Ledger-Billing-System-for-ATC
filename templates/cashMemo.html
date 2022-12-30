@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CashCustomerMemo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    
+</head>
+<style>
+    body{
+        background: rgb(226, 215, 215);
+        overflow-x: hidden; /* Hide scrollbars */
+    }
+   
+</style>
+<body>
+  {% macro catch(on_exception) %}
+  {{ handle_catch(caller, on_exception) }}
+  {% endmacro %}
+  {% if memo_details['is_ledger'] == 1%}
+    <div class="row">
+      {% endif %}
+        <h1 class = "text-center">CASH MEMO:- {{memo_details['memo_no']}}</h1>
+      </div>
+      <div class="row">
+       <div class="col-2">
+       </div>
+       <div class="col-2">
+
+      </div>
+      <div class="col-2">
+        
+        <input id="date_of_issue" class="form-control" type="date" name="" id="" value = "{{memo_details['main_data']['date_of_issue']}}" onchange="Change_Date()">
+      </div>
+      
+      <div class="col-2">
+        <form action="/deleteMemo" method="post" onsubmit="return ValidateDeleteMemo()">
+          <input type="hidden" name="customer_uid" value="{{customer_uid}}">
+          <input type="hidden" name="memo_key" value="{{memo_key}}">
+          <button type="submit" class="btn-sm btn-primary my-2 mx-4" style="float:right">Delete Cash Memo</button>
+        </form>
+        <a href = "/customercashAccount" class="btn-sm btn-primary my-2 mx-4" style="float:right">Back</a>
+       </div>
+    </div>
+
+      <form action ="/cashMemo/{{memo_key}}" method = "POST" onsubmit="return Validate()">
+        <input type="text" id="All_JSON_DATA" name = "All_JSON_DATA" style="display:none" >
+      <button type="submit" class="btn-primary my-2 mx-4" style="float:right" >Save All</button>
+    </form>
+    <div class="conatiner mx-4 px-4" style = "justify-content: center;border:1px solid black">
+        <div class="row">
+              <div class = "col" >
+            <div class="mb-3">
+                <label for="formFile" class="form-label">Customer Name</label>
+                <input class="form-control" type="text" id="formFile" value = "{{name}}" disabled>
+              </div>
+            </div>
+          </div>
+          <div class = "row">
+              <div class="col-6">
+                <div class="mb-3">
+                    <label for="formFile" class="form-label">Packet/Bags</label>
+                    <input class="form-control" type="number" id="no_of_items" value = "{{memo_details['main_data']['no_of_items']}}" disabled>
+                  </div>
+              </div>
+              <div class="col-6">
+                <div class="mb-3">
+                    <label for="formFile" class="form-label">Address</label>
+                    <input class="form-control" type="text" id="formFile" value = "{{memo_details['main_data']['address']}}" oninput="changeAddress(this)">
+                  </div>
+              </div>
+          </div>
+        </div>
+        <div class="col">
+            <table class="table" id="main_table">
+                <thead>
+                  <tr>
+                    <!-- <th scope="col">#</th> -->
+                    <th scope="col">Truck No</th>
+                    <th scope="col">Particulars</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Rate</th>
+                    <th scope="col">Amount <button class="btn-sm btn-info" style = "border-radius:15px;float:right" onclick="Add_Row()">Add Entry</button></th>
+                    
+                  </tr>
+                </thead>
+                <tbody id = "main_table_body" >
+               {% call catch('') %}
+               {% for key in memo_details['main_data']['detail_items']%}
+               {% if key!='trial' %}
+                      <tr>
+                   
+                    <td><select name="" class = "item_select_truck" disabled>
+                        {% call catch('') %}
+                        <option value="{{memo_details['main_data']['detail_items'][key]['truck_specifics']}}">{{memo_details['main_data']['detail_items'][key]['visible_truck_specifics']}}</option>
+                        {% endcall %}
+                    </td>
+                    <td><select name="" id="" class = "item_select" disabled> 
+                      <option  value = "{{memo_details['main_data']['detail_items'][key]['item']}}">{{memo_details['main_data']['detail_items'][key]['item']}}</option>
+                    </select></td>
+                    <td><input class = "quantity" row_id = "{{key}}" type="number" value = "{{memo_details['main_data']['detail_items'][key]['quantity']}}" onchange="Update()"></td>
+                    <td><input class ="rate" type="number" value = "{{memo_details['main_data']['detail_items'][key]['rate']}}" onchange="Update()"></td>
+                    <td><input class ="amount" type="number" value = 0 disabled></td>
+                   
+                  </tr>
+   
+               {% endif %}
+               {% endfor %}
+               {% endcall %}
+
+                  
+                </tbody>
+                <tbody>
+
+                  <tr>
+                    <!-- <th scope="row">1</th> -->
+                    <td><b>TOTAL: -</b></td>
+                    <td colspan="2"><input id = "total-quantity" type="number" value = 0 disabled></td>
+                    <td colspan="2"><input id ="total-amount" type="number" value = 0 disabled style="width: 100%;text-align:center"></td>
+           
+                  </tr>
+                  <tr>
+                    <!-- <th scope="row">1</th> -->
+                    <td></td>
+                    <td colspan="2"><strong>G TOTAL:-</strong></td>
+                    <td colspan="2"><input id ="total-gtotal" type="number" value = 0 disabled style="width: 100%;text-align:center"></td>
+           
+                  </tr>
+                </tbody>
+              
+              </table>
+        </div>
+     
+
+     
+    
+<script>
+  var All_Data = {
+    'date_of_issue':"{{memo_details['main_data']['date_of_issue']}}",
+    'item':"{{memo_details['main_data']['item']}}",
+    'no_of_items': "{{memo_details['main_data']['no_of_items']}}",
+    'address': "{{memo_details['main_data']['address']}}",
+    'total_amount':"{{memo_details['main_data']['total_amount']}}",
+    'detail_items':{
+      'trial':"{{memo_details['main_data']['detail_items']['trial']}}"
+    },
+    'other_details':{
+     'hamaali':"{{memo_details['main_data']['other_details']['hamaali']}}",
+    }
+}
+function Change_Date(){
+  All_Data['date_of_issue'] = document.getElementById('date_of_issue').value
+}
+  function Update(){
+  let amounts = document.getElementsByClassName('amount')
+  let rates = document.getElementsByClassName('rate')
+  let quantities = document.getElementsByClassName('quantity')
+  let item_select = document.getElementsByClassName('item_select')
+  let item_select_truck = document.getElementsByClassName('item_select_truck')
+  let total_quantity = 0
+  let total_amount = 0
+  let total_exp = 0
+  for(let i =0;i<quantities.length;i++){
+       quantity_row_id = quantities[i].getAttribute('row_id').split('_')[0]
+       total_quantity+=parseFloat(quantities[i].value)
+       amounts[i].value = parseFloat(rates[i].value)*parseFloat(quantities[i].value)
+       All_Data['detail_items'][quantity_row_id] = {
+        'item': item_select[i].value,
+        'quantity':parseFloat(quantities[i].value),
+        'rate':parseFloat(rates[i].value),
+        'truck_specifics':item_select_truck[i].value.toString(),
+        'visible_truck_specifics':item_select_truck[i].options[item_select_truck[i].selectedIndex].text
+       }
+       total_amount += parseFloat(amounts[i].value)
+  }
+   document.getElementById('total-quantity').value = total_quantity
+   document.getElementById('no_of_items').value = total_quantity
+   All_Data['no_of_items'] = total_quantity
+   
+   document.getElementById('total-amount').value = total_amount
+   All_Data['total_amount'] = total_amount
+   document.getElementById('total-gtotal').value = total_amount+total_exp
+  }
+  function Update_Details_Minor(elem){
+        All_Data[elem.id] = elem.value
+  }
+  function Update_Other(){
+    let all_extra_chrges = document.getElementsByClassName('extra-charges')
+    let total_extra_charges = 0
+    let total_amount = parseFloat(document.getElementById('total-amount').value)
+    All_Data['total_amount'] = total_amount
+    for(let i=0;i<all_extra_chrges.length;i++){
+       total_extra_charges+=parseFloat(all_extra_chrges[i].value)
+       All_Data['other_details'][all_extra_chrges[i].id] = all_extra_chrges[i].value
+    }
+    // document.getElementById('total-extra-charges').value = total_extra_charges
+    document.getElementById('total-exp').value = total_extra_charges
+    document.getElementById('total-gtotal').value = total_amount+total_extra_charges
+
+
+  }
+  function changeAddress(e){
+    All_Data['address'] = e.value.toString()
+  }
+  function Del_Row(elem){
+    let u_id = elem.id
+    delete All_Data['detail_items'][u_id]
+    elem.parentElement.parentElement.remove()
+    Update()
+    Update_Other()
+  }
+  function Add_Row(){
+  let row_uid = makeid(7)
+  All_Data['detail_items'][row_uid]={
+    'item':'Potato Bag',
+    'quantity':0,
+    'rate':0,
+  }
+  var table = document.getElementById("main_table_body");
+  var row = table.insertRow(0);
+  var cell1 = row.insertCell(0);
+  var cell2 = row.insertCell(1);
+  var cell3 = row.insertCell(2);
+  var cell4 = row.insertCell(3);
+  var cell5 = row.insertCell(4);
+  cell1.innerHTML = `<select name="" id="item_select_truck" class = "item_select_truck">
+    {% call catch('') %}
+    {% for item in new_truck_lists.each() %}
+    {% for key,value in item.val().items() %}
+    {% if value['is_wholeseller'] == 1 %}
+    {% set total = value['main_data']['no_of_items'] %}
+    {% set tot = {'total': 0} %}
+    {% if value['sold_data']%}
+    {% if value['sold_data']['__credit__']%}
+    {% for _key,_value in value['sold_data']['__credit__'].items() %}
+    {% if tot.update({'total': tot.total + _value['quantity']}) %}
+    {% endif %} 
+    {% endfor %}
+    {% endif %}
+    {% if value['sold_data']['__cash__']%}
+    {% for _key,_value in value['sold_data']['__cash__'].items() %}
+    {% if tot.update({'total': tot.total + _value['quantity']}) %}
+    {% endif %} 
+    {% endfor %}
+    {% endif %}
+    {% endif %}
+    {% if total > tot.total %}
+    <option value="{{item.key()}}-->{{key}}">{{value['truck_no'].upper()}} --> {{item.key()}}</option>
+    {% endif %}
+    {% endif %}
+    {% endfor %}
+    {% endfor %}
+    {% endcall %}
+    </select>`;
+  cell2.innerHTML = `<select name="" id="${row_uid}_select" class = "item_select">
+            {% for key,val in products.items() %}
+
+            <option value="{{val}}">{{val}}</option>
+              {% endfor %}
+
+  </select>`;
+  cell3.innerHTML = `<input class = "quantity" type="number" row_id = ${row_uid}_quantity value = 0 onchange="Update()">`;
+  cell4.innerHTML = `<input class ="rate" type="number" value = 0 onchange="Update()">`;
+  cell5.innerHTML = `<input class ="amount" type="number"  value = 0 disabled><button id = ${row_uid} class="btn-sm btn-info" style = "border-radius:15px;float:right" onclick="Del_Row(this)">Delete</button>`;
+
+  }
+
+
+  function makeid(length) {
+    var result           = '';
+    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var charactersLength = characters.length;
+    for ( var i = 0; i < length; i++ ) {
+      result += characters.charAt(Math.floor(Math.random() * 
+ charactersLength));
+   }
+   return result;
+}
+function Validate(){
+
+  document.getElementById('All_JSON_DATA').value = JSON.stringify(All_Data)
+  let a = confirm('Are you sure you want to SAVE?')
+  if(a){
+    return true
+  }
+  else{
+    return false
+  }
+}
+function ledger_Changed(elem){
+  let  dec = confirm('Are you sure you want to change the current ledger?')
+  if(dec && elem.value!=""){
+      document.getElementById('ledger_Change_Form').submit()
+  }
+  else{
+    alert('Try Later')
+  }
+}
+function ValidateDeleteMemo(){
+  let dec = confirm("Are you sure you want to delete this Memo?")
+  if (dec){
+    return true;
+  }
+  return false;
+  
+}
+</script>
+<script defer>
+  Update()
+  Update_Other()
+
+</script>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+</body>
+</html>

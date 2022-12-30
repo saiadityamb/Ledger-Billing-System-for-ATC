@@ -1,0 +1,301 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CreditCustomerMemo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    
+</head>
+<style>
+    body{
+        background: rgb(226, 215, 215);
+        overflow-x: hidden; /* Hide scrollbars */
+    }
+   
+</style>
+<body>
+  
+  <div id="heading">
+
+
+    <div class="row">
+        <h1 class = "text-center">CREDIT MEMO:- 4487005</h1>
+      </div>
+  
+
+    <div class="container mx-4 px-4">
+        <div class="row">
+              <div class = "col" >
+            <div class="mb-3">
+                <label for="formFile" class="form-label">Customer Name</label>
+                <input class="form-control" type="text" id="formFile" value = "Sai Aditya" disabled>
+              </div>
+            </div>
+          </div>
+          <div class = "row">
+              <div class="col-6">
+                <div class="mb-3">
+                    <label for="formFile" class="form-label">Packet/Bags</label>
+                    <input class="form-control" type="number" id="no_of_items" value = "250" disabled>
+                  </div>
+              </div>
+              <div class="col-6">
+                <div class="mb-3">
+                    <label for="formFile" class="form-label">Address</label>
+                    <input class="form-control" type="text" id="formFile" value = "vyapar vihar" oninput="changeAddress(this)">
+                  </div>
+              </div>
+          </div>
+        </div>
+        <div class="col container">
+            <table class="table" id="main_table">
+                <thead>
+                  <tr>
+                    <!-- <th scope="col">#</th> -->
+                    <th scope="col">Particulars</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Rate</th>
+                    <th scope="col">Amount</th>
+                    
+                  </tr>
+                </thead>
+                <tbody id = "main_table_body" >
+               
+  
+               
+               
+                      <tr>
+                   
+                    <td><select name="" id="" class = "item_select" disabled> 
+                      <option  value = "Potato Bag">Potato Bag</option>
+                    </select></td>
+                    <td><input class = "quantity" row_id = "QZJv2F5" type="number" value = "100" onchange="Update()"></td>
+                    <td><input class ="rate" type="number" value = "450" onchange="Update()"></td>
+                    <td><input class ="amount" type="number" value = 0 disabled></td>
+                   
+                  </tr>
+   
+               
+               
+               
+                      <tr>
+                   
+                    <td><select name="" id="" class = "item_select" disabled> 
+                      <option  value = "Onion Bag">Onion Bag</option>
+                    </select></td>
+                    <td><input class = "quantity" row_id = "eIbbRae" type="number" value = "150" onchange="Update()"></td>
+                    <td><input class ="rate" type="number" value = "480" onchange="Update()"></td>
+                    <td><input class ="amount" type="number" value = 0 disabled></td>
+                   
+                  </tr>
+   
+               
+               
+               
+               
+               
+  
+
+                  
+                </tbody>
+                <tbody>
+
+                  <tr>
+                    <!-- <th scope="row">1</th> -->
+                    <td><b>TOTAL: -</b></td>
+                    <td colspan="1"><input id = "total-quantity" type="number" value = 0 disabled></td>
+                    <td colspan="1"><input id ="total-amount" type="number" value = 0 disabled style="width: 100%;text-align:center"></td>
+           
+                  </tr>
+                  <tr>
+                    <!-- <th scope="row">1</th> -->
+                    <td></td>
+                    <td colspan="1"><strong>HAMALI:-</strong></td>
+                    <td colspan="1"><input id ="total-exp" type="number" value = 0 disabled style="width: 100%;text-align:center"></td>
+           
+                  </tr>
+                  <tr>
+                    <!-- <th scope="row">1</th> -->
+                    <td></td>
+                    <td colspan="1"><strong>G TOTAL:-</strong></td>
+                    <td colspan="1"><input id ="total-gtotal" type="number" value = 0 disabled style="width: 100%;text-align:center"></td>
+           
+                  </tr>
+                </tbody>
+              
+              </table>
+        </div>
+        </div>
+     
+   
+     
+    
+<script>
+  var All_Data = {
+    'date_of_issue':"2022-12-18",
+    'item':" ",
+    'no_of_items': "250",
+    'address': "vyapar vihar",
+    'total_amount':"117000",
+    'detail_items':{
+      'trial':"1"
+    },
+    'other_details':{
+     'hamaali':"400",
+    }
+}
+function Change_Date(){
+  All_Data['date_of_issue'] = document.getElementById('date_of_issue').value
+}
+  function Update(){
+  let amounts = document.getElementsByClassName('amount')
+  let rates = document.getElementsByClassName('rate')
+  let quantities = document.getElementsByClassName('quantity')
+  let item_select = document.getElementsByClassName('item_select')
+  let item_select_truck = document.getElementsByClassName('item_select_truck')
+  let total_quantity = 0
+  let total_amount = 0
+  let total_exp = parseFloat(document.getElementById('total-exp').value)
+  for(let i =0;i<quantities.length;i++){
+       quantity_row_id = quantities[i].getAttribute('row_id').split('_')[0]
+       total_quantity+=parseFloat(quantities[i].value)
+       amounts[i].value = parseFloat(rates[i].value)*parseFloat(quantities[i].value)
+       All_Data['detail_items'][quantity_row_id] = {
+        'item': item_select[i].value,
+        'quantity':parseFloat(quantities[i].value),
+        'rate':parseFloat(rates[i].value),
+        // 'truck_specifics':item_select_truck[i].value.toString(),
+        // 'visible_truck_specifics':item_select_truck[i].options[item_select_truck[i].selectedIndex].text
+       }
+       total_amount += parseFloat(amounts[i].value)
+  }
+   document.getElementById('total-quantity').value = total_quantity
+   document.getElementById('no_of_items').value = total_quantity
+   All_Data['no_of_items'] = total_quantity
+   
+   document.getElementById('total-amount').value = total_amount
+   All_Data['total_amount'] = total_amount
+   document.getElementById('total-gtotal').value = total_amount+total_exp
+  }
+  function Update_Details_Minor(elem){
+        All_Data[elem.id] = elem.value
+  }
+  function Update_Other(){
+    let all_extra_chrges = document.getElementsByClassName('extra-charges')
+    let total_extra_charges = 0
+    let total_amount = parseFloat(document.getElementById('total-amount').value)
+    All_Data['total_amount'] = total_amount
+    for(let i=0;i<all_extra_chrges.length;i++){
+       total_extra_charges+=parseFloat(all_extra_chrges[i].value)
+       All_Data['other_details'][all_extra_chrges[i].id] = all_extra_chrges[i].value
+    }
+    // document.getElementById('total-extra-charges').value = total_extra_charges
+    document.getElementById('total-exp').value = total_extra_charges
+    document.getElementById('total-gtotal').value = total_amount+total_extra_charges
+
+
+  }
+  function changeAddress(e){
+    All_Data['address'] = e.value.toString()
+  }
+  function Del_Row(elem){
+    let u_id = elem.id
+    delete All_Data['detail_items'][u_id]
+    elem.parentElement.parentElement.remove()
+    Update()
+    Update_Other()
+  }
+  function Add_Row(){
+  let row_uid = makeid(7)
+  All_Data['detail_items'][row_uid]={
+    'item':'Potato Bag',
+    'quantity':0,
+    'rate':0,
+  }
+  var table = document.getElementById("main_table_body");
+  var row = table.insertRow(0);
+  var cell1 = row.insertCell(0);
+  var cell2 = row.insertCell(1);
+  var cell3 = row.insertCell(2);
+  var cell4 = row.insertCell(3);
+  var cell5 = row.insertCell(4);
+  cell1.innerHTML = `<select name="" id="item_select_truck" class = "item_select_truck">
+    
+  
+  
+    </select>`;
+  cell2.innerHTML = `<select name="" id="${row_uid}_select" class = "item_select">
+            
+
+            <option value="Potato Bag">Potato Bag</option>
+              
+
+            <option value="Onion Bag">Onion Bag</option>
+              
+
+  </select>`;
+  cell3.innerHTML = `<input class = "quantity" type="number" row_id = ${row_uid}_quantity value = 0 onchange="Update()">`;
+  cell4.innerHTML = `<input class ="rate" type="number" value = 0 onchange="Update()">`;
+  cell5.innerHTML = `<input class ="amount" type="number"  value = 0 disabled><button id = ${row_uid} class="btn-sm btn-info" style = "border-radius:15px;float:right" onclick="Del_Row(this)">Delete</button>`;
+
+  }
+
+
+  function makeid(length) {
+    var result           = '';
+    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var charactersLength = characters.length;
+    for ( var i = 0; i < length; i++ ) {
+      result += characters.charAt(Math.floor(Math.random() * 
+ charactersLength));
+   }
+   return result;
+}
+function Validate(){
+
+  document.getElementById('All_JSON_DATA').value = JSON.stringify(All_Data)
+  let a = confirm('Are you sure you want to SAVE?')
+  if(a){
+    return true
+  }
+  else{
+    return false
+  }
+}
+function ledger_Changed(elem){
+  let  dec = confirm('Are you sure you want to change the current ledger?')
+  if(dec && elem.value!=""){
+      document.getElementById('ledger_Change_Form').submit()
+  }
+  else{
+    alert('Try Later')
+  }
+}
+function ValidateDeleteMemo(){
+  let dec = confirm("Are you sure you want to delete this Memo?")
+  if (dec){
+    return true;
+  }
+  return false;
+  
+}
+function generate(){
+    let doc = new jsPDF()
+    let h1 = document.querySelector('#heading')
+    doc.fromHTML(h1,15,15)
+    doc.save("output.pdf")
+}
+</script>
+<script defer>
+  Update()
+  Update_Other()
+
+</script>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+</body>
+</html>

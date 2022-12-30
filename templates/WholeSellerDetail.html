@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WholeSellerDetail</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link href='https://fonts.googleapis.com/css?family=Amaranth' rel='stylesheet'>
+</head>
+<style>
+ body{
+   font-family: Amaranth;
+ }
+</style>
+<body>
+  {% macro catch(on_exception) %}
+  {{ handle_catch(caller, on_exception) }}
+  {% endmacro %}
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">{{name}}</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/">Home</a>
+          </li>
+          <!-- <li class="nav-item">
+            <a class="nav-link" href="#">Link</a>
+          </li> -->
+          <!-- <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Dropdown
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <li><a class="dropdown-item" href="#">Action</a></li>
+              <li><a class="dropdown-item" href="#">Another action</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="#">Something else here</a></li>
+            </ul>
+          </li> -->
+          <!-- <li class="nav-item">
+            <a class="nav-link disabled">Disabled</a>
+          </li> -->
+        </ul>
+     
+          <!-- <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search"> -->
+          <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#New_ledger">Add New Ledger</button>
+          <div class="modal fade" id="New_ledger" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">New ledger</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <div class="mb-3">
+                    <label for="exampleInputEmail1" class="form-label">Click on Create button to create a new ledger!!!!</label>
+                    <!-- <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"> -->
+                    
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <form action="/{{uid}}/new-ledger" method = "post">
+                  <button type="submit" class="btn btn-primary">Create</button>
+                </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        
+          <!-- <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search"> -->
+          <button type="button" class="btn btn-outline-success mx-2" data-bs-toggle="modal" data-bs-target="#New_Bijak">Add New Bijak</button>
+          <div class="modal fade" id="New_Bijak" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">New Bijak</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="/{{uid}}/new-bijak" method="post">
+                <div class="modal-body">
+                  <div class="mb-3">
+                    <label for="exampleInputEmail1" class="form-label">Truck No:-</label>
+                    <input type="text" class="form-control" name = "bijak_truck_no" aria-describedby="emailHelp" required> 
+                   
+                  </div>
+                  <div class="mb-3">
+                    <label for="exampleInputEmail1" class="form-label">Date:-</label>
+                    <input type="date" class="form-control" name = "bijak_date_of_issue" aria-describedby="emailHelp" required>
+                   
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-primary">Add</button>
+                </div>
+              </form>
+              </div>
+            </div>
+          </div>
+      
+      </div>
+    </div>
+  </nav>
+  <div class="conatiner" >
+    <div class="row" >
+      <div class="col-5" style = "background:rgb(230, 221, 221);height:100vh;border-right:2px solid black;border-top:2px solid black">
+        <h1 class = "text-center"> <u> ALL LEDGERS</u></h1>  
+        <div class = "main-ledger">
+         <div class="col">
+          {% call catch('') %}
+          {% for item in ledgers_list.each()%}
+          <h3 class = "ledger"> => <a href="/{{uid}}/ledger/{{item.key()}}">{{item.val()['visible_name']}}</a></h3>
+          {% endfor %}
+          {% endcall %}
+           <!-- <h3 class = "ledger"> => <a href="/templates/WholeSellerledger.html">ledger - 2022 (19-01-2022)</a></h3> -->
+         </div>
+        </div>
+      </div>
+      <div class="col-7" style = "background:rgb(247, 213, 215);height:100vh;border-top:2px solid black">
+     <h1 class = "text-center"> <u>ALL BIJAKS</u> </h1>
+     <div class = "main-bijak">
+      <div class="col">
+        {% call catch('') %}
+        {% for item in list_bijaks.each()%}
+        {% if item.val()['is_ledger'] == 0 %}
+        <h3 class = "Bijak" style="color: red;"> => <a href="/{{uid}}/bijak/{{item.key()}}" style="color: red;">{{item.val()['visible_name']}}</a></h3>
+        {% else %}
+        <h3 class = "Bijak" style="color: green;"> => <a href="/{{uid}}/bijak/{{item.key()}}" style="color: green;">{{item.val()['visible_name']}}</a></h3>
+        {% endif %}
+        {% endfor %}
+        {% endcall %}
+      </div>
+     </div>
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+</body>
+</html>

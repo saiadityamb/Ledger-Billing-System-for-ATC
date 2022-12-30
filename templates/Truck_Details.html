@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{truck_details['truck_no'].upper()}}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+</head>
+<!-- <style>
+    body{
+        background-image: url('static/logo.png');
+        background-repeat:no-repeat;
+        background-position: center 0%;
+    }
+</style> -->
+
+<body>
+    {% macro catch(on_exception) %}
+    {{ handle_catch(caller, on_exception) }}
+    {% endmacro %}
+    <h1 style="text-align:center;background-color:black;color:white;opacity:0.5">Ashish Trading Company</h1>
+    <h3 class="text-center">
+        Truck No:- {{truck_details['truck_no'].upper()}}
+    </h3>
+    <div class="row mx-4">
+  
+        {% if truck_details['is_wholeseller'] == 0 %}
+        <div class="col-2">
+            <form action="/addwholsellertoTruck" method="post" id="Wholeseller_Truck_Form">
+                <input type="hidden" name="date" value="{{date}}">
+                <input type="hidden" name="truck_date_uid" value="{{truck_date_uid}}">
+                <input type="hidden" name="truck_no" value="{{truck_details['truck_no']}}">
+                <label for="Wholeseller_uid">Choose Wholeseller:- </label>
+                <select id="Wholeseller_uid" name="Wholeseller_uid" class="form-control"
+                    onchange="WholesellerTruck(this)">
+                    <option value="">None</option>
+                    {% call catch('')%}
+                    {% for item in WholeSellers.each()%}
+                    <option value="{{item.key()}}">{{item.val()['name']}}</option>
+                    {% endfor %}
+                    {% endcall %}
+                    <option value="">None</option>
+
+                </select>
+            </form>
+        </div>
+        {% else %}
+        <div class="col-2">
+            <label for="Wholeseller_uid">Chosen Wholeseller:- </label>
+            <input class="form-control" type="text" name="" id="Wholeseller_uid" value="{{wholeseller_name}}" disabled>
+        </div>
+        <div class="col-2">
+            <label for="Wholeseller_uid">Date:- </label>
+            <input class="form-control" type="text" name="" id="Wholeseller_uid" value="{{date}}" disabled>
+        </div>
+        {% endif %}
+    </div>
+    {% if truck_details['is_wholeseller'] == 1 %}
+    <a type="button" href = "/NewTruckEntry" class="btn-sm btn-primary my-2 mx-4" style="float:right">Back</a>
+    <form action ="/truck/{{truck_date_uid}}/{{date}}" method = "POST" onsubmit="return Validate()">
+        <input type="text" id="All_JSON_DATA" name = "All_JSON_DATA" style="display:none" >
+      <button type="submit" class="btn-primary my-2 mx-4" style="float:right" >Save All</button>
+    </form>
+    <div class="col mx-3">
+        <table class="table" id="main_table">
+            <thead>
+                <tr>
+                    <!-- <th scope="col">#</th> -->
+                    <th scope="col">Particulars</th>
+                    <th scope="col">Quantity<button class="btn-sm btn-info" style="border-radius:15px;float:right"
+                            onclick="Add_Row()">Add Entry</button></th>
+
+
+                </tr>
+            </thead>
+            <tbody id="main_table_body">
+                {% call catch('') %}
+                {% for key in truck_details['main_data']['detail_items']%}
+                {% if key!='trial' %}
+         
+                <tr>
+
+                    <td><select name="" id="" class="item_select">
+                {% if truck_details['main_data']['detail_items'][key]['item'] == 'Potato Bag' %}
+                            <option value="Potato Bag" selected>Potato Bag</option>
+                            <option value="Onion Bag">Onion Bag</option>
+                            {% else %}
+                            <option value="Potato Bag" >Potato Bag</option>
+                            <option value="Onion Bag" selected>Onion Bag</option>
+                            {% endif %}
+                        </select></td>
+                    <td><input class="quantity" row_id="{{key}}" type="number"
+                            value="{{truck_details['main_data']['detail_items'][key]['quantity']}}" onchange="Update()"><button id="{{key}}"
+                            class="btn-sm btn-info" style="border-radius:15px;float:right"
+                            onclick="Del_Row(this)">Delete</button>
+                    </td>
+
+
+                </tr>
+
+                {% endif %}
+                {% endfor %}
+                {% endcall %}
+
+
+
+            </tbody>
+
+
+        </table>
+    </div>
+    <h2 class="text-center">
+        Credit/Cash Stock Details
+    </h2>
+    <div class="col mx-3">
+        <table class="table" id="main_table">
+            <thead>
+                <tr>
+                    <!-- <th scope="col">#</th> -->
+                    <th scope="col">Customer Name</th>
+                    <th scope="col">Item</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Rate</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Type</th>
+
+
+                </tr>
+            </thead>
+            <tbody id="main_table_body_credit_stocks">
+
+                {% call catch('') %}
+                {% for key,value in truck_details['sold_data']['__credit__'].items()%}
+                {% if key != "trial" %}
+         
+                <tr>
+
+                    <td><input type="text" value="{{value['customer_name']}}" disabled></td>
+                    <td><input type="text" value="{{value['item']}}" disabled></td>
+                    <td><input class="total_quantity" type="text" value="{{value['quantity']}}" disabled></td>
+                    <td><input type="text" value="{{value['rate']}}" disabled></td>
+                    <td><input class="total_rate" type="text" value="{{value['quantity']*value['rate']}}" disabled></td>
+                    <td><a href="/{{value['customer_uid']}}/memo/{{value['memo_key']}}" target="_blank">credit memo</a></td>
+                    
+
+
+                </tr>
+                
+                {% endif %}
+                {% endfor %}
+                {% endcall %}
+
+                {% call catch('') %}
+                {% for key,value in truck_details['sold_data']['__cash__'].items()%}
+                {% if key != "trial" %}
+         
+                <tr>
+
+                    <td><input type="text" value="{{value['customer_name']}}" disabled></td>
+                    <td><input type="text" value="{{value['item']}}" disabled></td>
+                    <td><input class="total_quantity" type="text" value="{{value['quantity']}}" disabled></td>
+                    <td><input type="text" value="{{value['rate']}}" disabled></td>
+                    <td><input class="total_rate" type="text" value="{{value['quantity']*value['rate']}}" disabled></td>
+                    <td><a href="/cashMemo/{{value['cash_memo_key']}}" target="_blank">cash memo</a></td>
+                    
+
+
+                </tr>
+                
+                {% endif %}
+                {% endfor %}
+                {% endcall %}
+                <tr>
+                    <td><h3><b>TOTAL:-</b></h3></td>
+                    <td></td>
+                    <td><input type="text" id="total_quantity" value="100" disabled></td>
+                    <td></td>
+                    <td><input type="text" id="total_rate" value="100" disabled></td>
+                </tr>
+
+
+
+            </tbody>
+
+
+        </table>
+    </div>
+    {% endif %}
+
+
+
+
+    <script>
+
+
+        var All_Data = {
+            'item': "{{truck_details['main_data']['item']}}",
+            'no_of_items': "{{truck_details['main_data']['no_of_items']}}",
+            'detail_items': {
+                'trial': "{{truck_details['main_data']['detail_items']['trial']}}"
+            },
+
+        }
+        function WholesellerTruck(elem) {
+            let dec = confirm('Are you sure you chosen correct wholeseller?')
+            if (dec && elem.value != "") {
+                document.getElementById('Wholeseller_Truck_Form').submit()
+            }
+            else {
+                alert('Try Later')
+            }
+        }
+
+
+
+        function Add_Row() {
+            let row_uid = makeid(7)
+              All_Data['detail_items'][row_uid]={
+                'item':'Potato Bag',
+                'quantity':0,
+              }
+            var table = document.getElementById("main_table_body");
+            var row = table.insertRow(0);
+            var cell1 = row.insertCell(0);
+            var cell2 = row.insertCell(1);
+
+        cell1.innerHTML = `
+        <select name="" id="${row_uid}_select" class = "item_select" ochange="changeItem(this)">
+            {% for key,val in products.items() %}
+
+            <option value="{{val}}">{{val}}</option>
+              {% endfor %}
+
+  </select>`;
+            cell2.innerHTML = `<input class = "quantity" type="number" row_id = ${row_uid}_quantity value = 0 onchange="Update()"><button id = ${row_uid} class="btn-sm btn-info" style = "border-radius:15px;float:right" onclick="Del_Row(this)">Delete</button>`;
+
+
+
+        }
+        function Del_Row(elem) {
+            let u_id = elem.id
+            delete All_Data['detail_items'][u_id]
+            elem.parentElement.parentElement.remove()
+
+        }
+        function changeItem(elem){
+            let u_id = elem.id
+            let val = elem.value
+            document.getElementById(u_id).value = val
+        }
+        function Update(){
+        let quantities = document.getElementsByClassName('quantity')
+        let item_select = document.getElementsByClassName('item_select')
+        let total_quantity = 0
+        let total_amount = 0
+        for(let i =0;i<quantities.length;i++){
+            quantity_row_id = quantities[i].getAttribute('row_id').split('_')[0]
+            total_quantity+=parseFloat(quantities[i].value)
+            All_Data['detail_items'][quantity_row_id] = {
+                'item': item_select[i].value,
+                'quantity':parseFloat(quantities[i].value),
+            }
+        }
+        All_Data['no_of_items'] = total_quantity
+  }
+  function Validate(){
+
+document.getElementById('All_JSON_DATA').value = JSON.stringify(All_Data)
+let a = confirm('Are you sure you want to SAVE?')
+if(a){
+  return true
+}
+else{
+  return false
+}
+}
+        function makeid(length) {
+            var result = '';
+            var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            var charactersLength = characters.length;
+            for (var i = 0; i < length; i++) {
+                result += characters.charAt(Math.floor(Math.random() *
+                    charactersLength));
+            }
+            return result;
+        }   
+        function Calculate_All(){
+            let total_quantities = document.getElementsByClassName("total_quantity")
+            let total_quantity = document.getElementById("total_quantity")
+            let total_rates = document.getElementsByClassName("total_rate")
+            let total_rate = document.getElementById("total_rate")
+            let q = 0
+            let r = 0
+            for(let i = 0;i<total_quantities.length;i++){
+                q+=parseFloat(total_quantities[i].value)
+                r+=parseFloat(total_rates[i].value)
+            }
+            total_quantity.value = q.toString()
+            total_rate.value = r.toString()
+
+        }        
+    </script>
+    <script defer>
+        Calculate_All()
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

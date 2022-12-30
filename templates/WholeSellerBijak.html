@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WholeSellerBijak</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    
+</head>
+<style>
+    body{
+        background: rgb(226, 215, 215);
+        overflow-x: hidden; /* Hide scrollbars */
+    }
+   
+</style>
+<body>
+  {% macro catch(on_exception) %}
+  {{ handle_catch(caller, on_exception) }}
+  {% endmacro %}
+  {% if bijak_details['is_ledger'] == 1%}
+    <div class="row">
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasTop" aria-labelledby="offcanvasTopLabel" style = "width:50%">
+        <div class="offcanvas-header">
+          <h5 id="offcanvasTopLabel">Other Important Details :-</h5>
+          <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+         <div class="row">
+           <div class="col-4">
+            <label for="inputPassword6" class="col-form-label text-center">मोटर भाडा<br>Truck Loading:-</label>
+           </div>
+           <div class="col-8">
+            <input type="number"   id = "truck_loading" value = "{{bijak_details['main_data']['other_details']['truck_loading']}}" class="form-control extra-charges" onchange="Update_Other()" aria-describedby="passwordHelpInline">
+           </div>
+         </div>
+         <hr>
+         <div class="row">
+           <div class="col-4">
+            <label for="inputPassword6" class="col-form-label text-center">हमाली<br>Labour:-</label>
+           </div>
+           <div class="col-8">
+            <input type="number"  id = "labour" value = "{{bijak_details['main_data']['other_details']['labour']}}" class="form-control extra-charges" onchange="Update_Other()" aria-describedby="passwordHelpInline">
+           </div>
+         </div>
+         <hr>
+         <div class="row">
+           <div class="col-4">
+            <label for="inputPassword6" class="col-form-label text-center">खाली बरदाना<br>Khali Bardan:-</label>
+           </div>
+           <div class="col-8">
+            <input type="number"  id = "khali_bardan" value = "{{bijak_details['main_data']['other_details']['khali_bardan']}}" class="form-control extra-charges" onchange="Update_Other()" aria-describedby="passwordHelpInline">
+           </div>
+         </div>
+         <hr>
+         <div class="row">
+           <div class="col-4">
+            <label for="inputPassword6" class="col-form-label text-center">गाड़ी भाड़ा<br>Loading:-</label>
+           </div>
+           <div class="col-8">
+            <input type="number"  id = "loading" value = "{{bijak_details['main_data']['other_details']['loading']}}" class="form-control extra-charges" onchange="Update_Other()" aria-describedby="passwordHelpInline">
+           </div>
+         </div>
+         <hr>
+         <div class="row">
+           <div class="col-4">
+            <label for="inputPassword6" class="col-form-label text-center">छटाई मजदूरी<br>Chhatai:-</label>
+           </div>
+           <div class="col-8">
+            <input type="number"  id = "chhatai" value = "{{bijak_details['main_data']['other_details']['chhatai']}}" class="form-control extra-charges" onchange="Update_Other()" aria-describedby="passwordHelpInline">
+           </div>
+         </div>
+         <hr>
+         <div class="row">
+           <div class="col-4">
+            <label for="inputPassword6" class="col-form-label text-center">कांटा<br>Kanta:-</label>
+           </div>
+           <div class="col-8">
+            <input type="number"  id = "kanta" value = "{{bijak_details['main_data']['other_details']['kanta']}}" class="form-control extra-charges" onchange="Update_Other()" aria-describedby="passwordHelpInline">
+           </div>
+         </div>
+         <hr>
+         <div class="row">
+           <div class="col-4">
+            <label for="inputPassword6" class="col-form-label text-center">तार-डाक<br>Tel & Postage:-</label>
+           </div>
+           <div class="col-8">
+            <input type="number"  id = "tel_postage" value = "{{bijak_details['main_data']['other_details']['tel_postage']}}" class="form-control extra-charges" onchange="Update_Other()" aria-describedby="passwordHelpInline">
+           </div>
+         </div>
+         <hr>
+         <div class="row">
+           <div class="col-4">
+            <label for="inputPassword6" class="col-form-label text-center">फोन<br>Phone:-</label>
+           </div>
+           <div class="col-8">
+            <input type="number"  id = "phone" value = "{{bijak_details['main_data']['other_details']['phone']}}" class="form-control extra-charges" onchange="Update_Other()" aria-describedby="passwordHelpInline">
+           </div>
+         </div>
+         <hr>
+         <div class="row">
+           <div class="col-4">
+            <label for="inputPassword6" class="col-form-label text-center">कमीशन<br>Commission:-</label>
+           </div>
+           <div class="col-8">
+            <input type="number"  id = "commission" value = "{{bijak_details['main_data']['other_details']['commission']}}" class="form-control extra-charges" onchange="Update_Other()" aria-describedby="passwordHelpInline" disabled>
+           </div>
+         </div>
+         <hr>
+         <div class="row">
+           <div class="col-4">
+            <label for="inputPassword6" class="col-form-label text-center">नगदी रुपया<br>Hard Cash:-</label>
+           </div>
+           <div class="col-8">
+            <input type="number"  id = "hard_cash" value = "{{bijak_details['main_data']['other_details']['hard_cash']}}" class="form-control extra-charges" onchange="Update_Other()" aria-describedby="passwordHelpInline">
+           </div>
+         </div>
+         <hr>
+         <div class="row">
+           <div class="col-4">
+            <label for="inputPassword6" class="col-form-label text-center">ड्राफ्ट खर्चा<br>Draft Cash:-</label>
+           </div>
+           <div class="col-8">
+            <input type="number"  id = "draft_cash" value = "{{bijak_details['main_data']['other_details']['draft_cash']}}" class="form-control extra-charges" onchange="Update_Other()" aria-describedby="passwordHelpInline">
+           </div>
+         </div>
+         <hr>
+         <div class="row">
+           <div class="col-4">
+            <label for="inputPassword6" class="col-form-label text-center">अन्य खर्चा<br>Exp:-</label>
+           </div>
+           <div class="col-8">
+            <input type="number"  id = "exp" value = "{{bijak_details['main_data']['other_details']['exp']}}" class="form-control extra-charges" onchange="Update_Other()" aria-describedby="passwordHelpInline">
+           </div>
+         </div>
+         <hr>
+         <hr>
+         <div class="row">
+           <div class="col-4">
+            <label for="inputPassword6" class="col-form-label text-center"><b>TOTAL:- </b></label>
+           </div>
+           <div class="col-8">
+            <input id="total-extra-charges" type="number"  value = 0 class="form-control"aria-describedby="passwordHelpInline" disabled>
+           </div>
+         </div>
+         <hr>
+        </div>
+      </div>
+      {% endif %}
+        <h1 class = "text-center">BIJAK NO:- {{bijak_details['bijak_no']}}</h1>
+      </div>
+      <div class="row">
+       <div class="col-2">
+        {% if bijak_details['is_ledger'] == 1 %}
+         <button class="btn-primary my-2 mx-4" data-bs-toggle="offcanvas" data-bs-target="#offcanvasTop" aria-controls="offcanvasTop">Other Details</button>
+         {% endif %}
+       </div>
+       <div class="col-2">
+         <form action="/{{uid}}/ledger-change/{{bijak_key}}" method="post" id="ledger_Change_Form">
+         <select  id="ledger_ID" name="ledger_ID" class="form-control" onchange="ledger_Changed(this)">
+           <option value="">None</option>
+           {% call catch('')%}
+           {% for item in ledgers_list.each()%}
+           {% if item.key()== bijak_details['ledger_key']%}
+           <option value="{{item.key()}}" selected>{{item.val()['visible_name']}}</option>
+           {% else %}
+           <option value="{{item.key()}}">{{item.val()['visible_name']}}</option>
+           {% endif %}
+           {% endfor %}
+           {% endcall %}
+           
+        </select>
+      </form>
+      </div>
+      <div class="col-2">
+        
+        <input id="date_of_issue" class="form-control" type="date" name="" id="" value = "{{bijak_details['main_data']['date_of_issue']}}" onchange="Change_Date()">
+      </div>
+      {% if bijak_details['is_ledger'] == 1 %}
+      <div class="col-2">
+        <button class = "btn btn-primary" onclick="Calc_Comm()">Calculate Commission</button>
+      </div>
+      <div class="col-2">   
+      </div>
+      {% endif %}
+      
+      <div class="col-2">
+        <form action="/deleteBijak" method="post" onsubmit="return ValidateDeleteBijak()">
+          <input type="hidden" name="uid" value="{{uid}}">
+          <input type="hidden" name="bijak_key" value="{{bijak_key}}">
+          <button type="submit" class="btn-sm btn-primary my-2 mx-4" style="float:right">Delete Bijak</button>
+        </form>
+        <a href = "/{{uid}}" class="btn-sm btn-primary my-2 mx-4" style="float:right">Back</a>
+       </div>
+       {% if bijak_details['is_ledger'] == 1 %}
+      </div>
+      <form action ="/{{uid}}/bijak/{{bijak_key}}" method = "POST" onsubmit="return Validate()">
+        <input type="text" id="All_JSON_DATA" name = "All_JSON_DATA" style="display:none" >
+      <button type="submit" class="btn-primary my-2 mx-4" style="float:right" >Save All</button>
+    </form>
+    <div class="conatiner mx-4 px-4" style = "justify-content: center;border:1px solid black">
+        <div class = "col" >
+          <div class="row">
+            <div class="mb-3">
+                <label for="formFile" class="form-label">Name</label>
+                <input class="form-control" type="text" id="formFile" value = "{{name}}" disabled>
+              </div>
+          </div>
+            <div class="mb-3">
+                <label for="formFile" class="form-label">Aaloo/Pyaz</label>
+                <input class="form-control" type="text" id="item" value = "{{bijak_details['main_data']['item']}}" onchange="Update_Details_Minor(this)">
+              </div>
+          </div>
+          <div class = "row">
+              <div class="col-6">
+                <div class="mb-3">
+                    <label for="formFile" class="form-label">Packet/Bags</label>
+                    <input class="form-control" type="number" id="no_of_items" value = "{{bijak_details['main_data']['no_of_items']}}" disabled>
+                  </div>
+              </div>
+              <div class="col-6">
+                <div class="mb-3">
+                    <label for="formFile" class="form-label">Truck NO.</label>
+                    <input class="form-control" type="text" id="formFile" value = "{{bijak_details['main_data']['truck_no']}}" disabled >
+                  </div>
+              </div>
+          </div>
+          <div class = "row">
+              <div class="col-6">
+                <div class="mb-3">
+                    <label for="formFile" class="form-label">Kahan se</label>
+                    <input class="form-control" type="text" id="where_from" value="{{bijak_details['main_data']['where_from']}}" onchange="Update_Details_Minor(this)">
+                  </div>
+              </div>
+              <div class="col-6">
+                <div class="mb-3">
+                    <label for="formFile" class="form-label">Kahan</label>
+                    <input class="form-control" type="text" id="where_to" value="{{bijak_details['main_data']['where_to']}}" onchange="Update_Details_Minor(this)">
+                  </div>
+              </div>
+          </div>
+        </div>
+        <div class="col">
+            <table class="table" id="main_table">
+                <thead>
+                  <tr>
+                    <!-- <th scope="col">#</th> -->
+                    <th scope="col">Particulars</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Rate</th>
+                    <th scope="col">Amount <button class="btn-sm btn-info" style = "border-radius:15px;float:right" onclick="Add_Row()">Add Entry</button></th>
+                    
+                  </tr>
+                </thead>
+                <tbody id = "main_table_body" >
+               {% call catch('') %}
+               {% for key in bijak_details['main_data']['detail_items']%}
+               {% if key!='trial' %}
+                      <tr>
+                   
+                    <td><select name="" id="" class = "item_select" value = "{{bijak_details['main_data']['detail_items'][key]['item']}}">
+                      <option value="Potato Bag">Potato Bag</option>
+                      <option value="Onion Bag">Onion Bag</option>
+                    </select></td>
+                    <td><input class = "quantity" row_id = "{{key}}" type="number" value = "{{bijak_details['main_data']['detail_items'][key]['quantity']}}" onchange="Update()"></td>
+                    <td><input class ="rate" type="number" value = "{{bijak_details['main_data']['detail_items'][key]['rate']}}" onchange="Update()"></td>
+                    <td><input class ="amount" type="number" value = 0 disabled><button id = "{{key}}" class="btn-sm btn-info" style = "border-radius:15px;float:right" onclick="Del_Row(this)">Delete</button></td>
+                   
+                  </tr>
+               <!-- <h1>{{bijak_details['main_data']['detail_items'][key]}}</h1> -->
+               {% endif %}
+               {% endfor %}
+               {% endcall %}
+
+                  
+                  <!-- <tr>
+                   
+                    <td><select name="" id="">
+                      <option value="Potato Bag">Potato Bag</option>
+                      <option value="Onion Bag">Onion Bag</option>
+                    </select></td>
+                    <td><input class = "quantity" type="number" value = 0 onchange="Update()"></td>
+                    <td><input class ="rate" type="number" value = 0 onchange="Update()"></td>
+                    <td><input class ="amount" type="number" value = 0 disabled><button class="btn-sm btn-info" style = "border-radius:15px;float:right" onclick="Del_Row(this)">Delete</button></td>
+                   
+                  </tr> -->
+                  <!-- <tr>
+                    
+                    <td><select name="" id="">
+                      <option value="Potato Bag">Potato Bag</option>
+                      <option value="Onion Bag">Onion Bag</option>
+                    </select></td>
+                    <td><input class = "quantity" type="number" value =0 onchange="Update()"></td>
+                    <td><input class ="rate" type="number" value = 0 onchange="Update()"></td>
+                    <td><input class ="amount" type="number" value = 0 disabled><button class="btn-sm btn-info" style = "border-radius:15px;float:right" onclick="Del_Row(this)">Delete</button></td>
+                  </tr> -->
+                  <!-- <tr>
+                   
+                    <td><select name="" id="">
+                      <option value="Potato Bag">Potato Bag</option>
+                      <option value="Onion Bag">Onion Bag</option>
+                    </select></td>
+                    <td><input class = "quantity" type="number" value = 0 onchange="Update()"></td>
+                    <td><input class ="rate" type="number" value = 0 onchange="Update()"></td>
+                    <td><input class ="amount" type="number" value = 0 disabled><button class="btn-sm btn-info" style = "border-radius:15px;float:right" onclick="Del_Row(this)">Delete</button></td>
+                  </tr> -->
+                </tbody>
+                <tbody>
+
+                  <tr>
+                    <!-- <th scope="row">1</th> -->
+                    <td><b>TOTAL: -</b></td>
+                    <td><input id = "total-quantity" type="number" value = 0 disabled></td>
+                    <td colspan="2"><input id ="total-amount" type="number" value = 0 disabled style="width: 100%;text-align:center"></td>
+           
+                  </tr>
+                  <tr>
+                    <!-- <th scope="row">1</th> -->
+                    <td></td>
+                    <td><strong>EXP:-</strong></td>
+                    <td colspan="2"><input id ="total-exp" type="number" value = 0 disabled style="width: 100%;text-align:center"></td>
+           
+                  </tr>
+                  <tr>
+                    <!-- <th scope="row">1</th> -->
+                    <td></td>
+                    <td><strong>G TOTAL:-</strong></td>
+                    <td colspan="2"><input id ="total-gtotal" type="number" value = 0 disabled style="width: 100%;text-align:center"></td>
+           
+                  </tr>
+                </tbody>
+              
+              </table>
+        </div>
+     
+   {% endif %}
+     
+    
+<script>
+  var All_Data = {
+    'date_of_issue':"{{bijak_details['main_data']['date_of_issue']}}",
+    'item':"{{bijak_details['main_data']['item']}}",
+    'no_of_items': "{{bijak_details['main_data']['no_of_items']}}",
+    'truck_no':"{{bijak_details['main_data']['truck_no']}}",
+    'total_amount':"{{bijak_details['main_data']['total_amount']}}",
+    'where_from':"{{bijak_details['main_data']['where_from']}}",
+    'where_to':"{{bijak_details['main_data']['where_to']}}",
+    'detail_items':{
+      'trial':"{{bijak_details['main_data']['detail_items']['trial']}}"
+    },
+    'other_details':{
+     'truck_loading':"{{bijak_details['main_data']['other_details']['truck_loading']}}",
+     'labour':"{{bijak_details['main_data']['other_details']['labour']}}",
+     'khali_bardan':"{{bijak_details['main_data']['other_details']['khali_bardan']}}",
+     'loading':"{{bijak_details['main_data']['other_details']['loading']}}",
+     'chhatai':"{{bijak_details['main_data']['other_details']['chhatai']}}",
+     'kanta':"{{bijak_details['main_data']['other_details']['kanta']}}",
+     'tel_postage':"{{bijak_details['main_data']['other_details']['tel_postage']}}",
+     'phone':"{{bijak_details['main_data']['other_details']['phone']}}",
+     'commission':"{{bijak_details['main_data']['other_details']['commission']}}",
+     'hard_cash':"{{bijak_details['main_data']['other_details']['hard_cash']}}",
+     'draft_cash':"{{bijak_details['main_data']['other_details']['draft_cash']}}",
+     'exp':"{{bijak_details['main_data']['other_details']['exp']}}"
+    }
+}
+function Change_Date(){
+  All_Data['date_of_issue'] = document.getElementById('date_of_issue').value
+}
+  function Update(){
+  let amounts = document.getElementsByClassName('amount')
+  let rates = document.getElementsByClassName('rate')
+  let quantities = document.getElementsByClassName('quantity')
+  let item_select = document.getElementsByClassName('item_select')
+  let total_quantity = 0
+  let total_amount = 0
+  let total_exp = parseFloat(document.getElementById('total-exp').value)
+  for(let i =0;i<quantities.length;i++){
+       quantity_row_id = quantities[i].getAttribute('row_id').split('_')[0]
+       total_quantity+=parseFloat(quantities[i].value)
+       amounts[i].value = parseFloat(rates[i].value)*parseFloat(quantities[i].value)
+       All_Data['detail_items'][quantity_row_id] = {
+        'item': item_select[i].value,
+        'quantity':parseFloat(quantities[i].value),
+        'rate':parseFloat(rates[i].value),
+       }
+       total_amount += parseFloat(amounts[i].value)
+  }
+   document.getElementById('total-quantity').value = total_quantity
+   document.getElementById('no_of_items').value = total_quantity
+   All_Data['no_of_items'] = total_quantity
+   
+   document.getElementById('total-amount').value = total_amount
+   All_Data['total_amount'] = total_amount
+   document.getElementById('total-gtotal').value = total_amount-total_exp
+  }
+  function Update_Details_Minor(elem){
+        All_Data[elem.id] = elem.value
+  }
+  function Update_Other(){
+    let all_extra_chrges = document.getElementsByClassName('extra-charges')
+    let total_extra_charges = 0
+    let total_amount = parseFloat(document.getElementById('total-amount').value)
+    All_Data['total_amount'] = total_amount
+    for(let i=0;i<all_extra_chrges.length;i++){
+       total_extra_charges+=parseFloat(all_extra_chrges[i].value)
+       All_Data['other_details'][all_extra_chrges[i].id] = all_extra_chrges[i].value
+    }
+    document.getElementById('total-extra-charges').value = total_extra_charges
+    document.getElementById('total-exp').value = total_extra_charges
+    document.getElementById('total-gtotal').value = total_amount-total_extra_charges
+
+
+  }
+  function Del_Row(elem){
+    let u_id = elem.id
+    delete All_Data['detail_items'][u_id]
+    elem.parentElement.parentElement.remove()
+    Update()
+    Update_Other()
+  }
+  function Add_Row(){
+  let row_uid = makeid(7)
+  All_Data['detail_items'][row_uid]={
+    'item':'Potato Bag',
+    'quantity':0,
+    'rate':0,
+  }
+  var table = document.getElementById("main_table_body");
+  var row = table.insertRow(0);
+  var cell1 = row.insertCell(0);
+  var cell2 = row.insertCell(1);
+  var cell3 = row.insertCell(2);
+  var cell4 = row.insertCell(3);
+  cell1.innerHTML = `<select name="" id="${row_uid}_select" class = "item_select">
+            {% for key,val in products.items() %}
+
+            <option value="{{val}}">{{val}}</option>
+              {% endfor %}
+
+  </select>`;
+  cell2.innerHTML = `<input class = "quantity" type="number" row_id = ${row_uid}_quantity value = 0 onchange="Update()">`;
+  cell3.innerHTML = `<input class ="rate" type="number" value = 0 onchange="Update()">`;
+  cell4.innerHTML = `<input class ="amount" type="number"  value = 0 disabled><button id = ${row_uid} class="btn-sm btn-info" style = "border-radius:15px;float:right" onclick="Del_Row(this)">Delete</button>`;
+
+  }
+  function Calc_Comm(){
+    let total_amount = parseFloat(document.getElementById('total-amount').value)
+    document.getElementById('commission').value = (total_amount*parseFloat("{{settings_data['percen_comm_Comm']}}"))/100
+    document.getElementById('loading').value = (total_amount*parseFloat("{{settings_data['percen_comm_Load']}}"))/100
+    Update_Other()
+    Update()
+    alert("Commsion Calculated Successfully!!!")
+    
+  }
+  function makeid(length) {
+    var result           = '';
+    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var charactersLength = characters.length;
+    for ( var i = 0; i < length; i++ ) {
+      result += characters.charAt(Math.floor(Math.random() * 
+ charactersLength));
+   }
+   return result;
+}
+function Validate(){
+
+  document.getElementById('All_JSON_DATA').value = JSON.stringify(All_Data)
+  let a = confirm('Are you sure you want to SAVE?')
+  if(a){
+    return true
+  }
+  else{
+    return false
+  }
+}
+function ledger_Changed(elem){
+  let  dec = confirm('Are you sure you want to change the current ledger?')
+  if(dec && elem.value!=""){
+      document.getElementById('ledger_Change_Form').submit()
+  }
+  else{
+    alert('Try Later')
+  }
+}
+function ValidateDeleteBijak(){
+  let dec = confirm("Are you sure you want to delete this Bijak?")
+  if (dec){
+    return true;
+  }
+  return false;
+  
+}
+</script>
+<script defer>
+  Update()
+  Update_Other()
+</script>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+</body>
+</html>
