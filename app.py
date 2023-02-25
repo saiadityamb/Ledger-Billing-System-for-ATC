@@ -641,6 +641,7 @@ def mbsa():
 #     response.headers['Content-type'] = 'application/pdf'
 #     response.headers['Content-disposition'] = 'inline; filename=output.pdf'
 #     return response
-if __name__ == '__main__':
-    # webbrowser.open('http://localhost:5500')
-    app.run(debug=True,port=5500)
+# if __name__ == '__main__':
+#     # webbrowser.open('http://localhost:5500')
+#     app.run()
+    # app.run(debug=True,port=5500)
